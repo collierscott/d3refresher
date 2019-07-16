@@ -1,4 +1,4 @@
-var data            =   [
+let data            =   [
     [ 400, 200 ],
     [ 210,140 ],
     [ 722,300 ],
@@ -35,6 +35,15 @@ let yScale = d3.scaleLinear()
     )])
     .range([chart_height - padding, padding])
 ;
+
+// Clip paths
+svg.append('clipPath')
+    .attr('id', 'plot-area-clip-path')
+    .append('rect')
+    .attr('x', padding)
+    .attr('y', padding)
+    .attr('width', chart_width - padding * 3)
+    .attr('height', chart_height - padding * 2);
 
 // Radius is not a good representation of circles. Use square root for area.
 // let rScale = d3.scaleLinear()
@@ -84,7 +93,10 @@ svg.append('g')
 ;
 
 // Create chart
-svg.selectAll('circle')
+svg.append('g')
+    .attr('id', 'plot-area')
+    .attr('clip-path', 'url(#plot-area-clip-path)')
+    .selectAll('circle')
     .data(data)
     .enter()
     .append('circle')
@@ -136,16 +148,36 @@ d3.select('button').on('click', function() {
         return d[1];
     })]);
 
+    let colors = [
+        '#FF3F2E', '#AD3AE8', '#4D8FFF', '#3AE8A3', '#B0FF40'
+    ];
+
+    let colorIndex = Math.floor(
+        Math.random() * colors.length
+    );
+
     svg.selectAll('circle')
         .data(data)
         .transition()
         .duration(1000)
+        .on('start', function() {
+            d3.select(this)
+                .attr('fill', '#f26d2d')
+            ;
+        })
         .attr('cx', function(d) {
             return xScale(d[0]);
         })
         .attr('cy', function(d) {
             return yScale(d[1]);
         })
+        // .on('end', function() {
+        //     d3.select(this)
+        //         .attr('fill', '#d1ab0e')
+        //     ;
+        // })
+        .transition()
+        .attr('fill', colors[colorIndex])
     ;
 
     // Update axis
