@@ -59,6 +59,9 @@ d3.select('button').on('click', function() {
     data.reverse();
     svg.selectAll('rect')
         .data(data)
+        .transition()
+        .duration(1000)
+        .ease(d3.easeElasticOut)
         .attr( 'y', function(d){
             return chart_height - y_scale(d);
         })
@@ -68,6 +71,11 @@ d3.select('button').on('click', function() {
 
     svg.selectAll( 'text' )
         .data(data)
+        .transition()
+        .delay(function(d, i) {
+            return i / data.length * 1000;
+        })
+        .duration(1000)
         .text(function( d ){
             return d;
         })
