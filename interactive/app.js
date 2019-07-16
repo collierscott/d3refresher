@@ -1,10 +1,10 @@
 let data =   [6,20,21,14,2,30,7,16,25,5,11,28,10,26,9];
 
 // Create SVG Element
-let chart_width     =   800;
-let chart_height    =   400;
-let bar_padding     =   5;
-let svg             =   d3.select( '#chart' )
+let chart_width =   800;
+let chart_height =   400;
+
+let svg = d3.select( '#chart' )
     .append( 'svg' )
     .attr( 'width', chart_width )
     .attr( 'height', chart_height );
@@ -53,3 +53,26 @@ svg.selectAll( 'text' )
     .attr( 'font-size', 14 )
     .attr( 'fill', '#fff' )
     .attr( 'text-anchor', 'middle' );
+
+// Events
+d3.select('button').on('click', function() {
+    data.reverse();
+    svg.selectAll('rect')
+        .data(data)
+        .attr( 'y', function(d){
+            return chart_height - y_scale(d);
+        })
+        .attr( 'height', function( d ){
+            return y_scale(d);
+        });
+
+    svg.selectAll( 'text' )
+        .data(data)
+        .text(function( d ){
+            return d;
+        })
+        .attr( 'y', function(d ){
+            return chart_height - y_scale(d) + 15;
+        });
+});
+
