@@ -56,7 +56,9 @@ svg.selectAll( 'text' )
 
 // Events
 d3.select('button').on('click', function() {
-    data.reverse();
+    // data.reverse();
+    data[0] = 50;
+    y_scale.domain([0, d3.max(data)]);
     svg.selectAll('rect')
         .data(data)
         .transition()
