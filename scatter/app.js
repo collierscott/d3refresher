@@ -44,12 +44,12 @@ let yScale = d3.scaleLinear()
 //     )])
 //     .range([5, 30]);
 
-let aScale = d3.scaleSqrt()
-    .domain([0, d3.max(data, function (d) {
-            return d[1];
-        }
-    )])
-    .range([0, 25]);
+// let aScale = d3.scaleSqrt()
+//     .domain([0, d3.max(data, function (d) {
+//             return d[1];
+//         }
+//     )])
+//     .range([0, 25]);
 
 // Create axis
 let xAxis = d3.axisBottom()
@@ -95,23 +95,67 @@ svg.selectAll('circle')
         return yScale(d[1]);
     })
     .attr('r', function(d) {
-        return aScale(d[1]);
+        //return aScale(d[1]);
+        return 15;
     })
     .attr('fill', '#D1AB0E')
 ;
 
 // Create labels
 // Append a group so labels will not disappear
-svg.append('g')
-    .selectAll('text')
-    .data(data)
-    .enter()
-    .append('text')
-    .text(function(d) {
-        return '[' + d.join(', ') + ']'
-    })
-    .attr('x', function(d) {
-        return xScale(d[0]);
-    })
-    .attr('y', d => yScale(d[1]))
-;
+// svg.append('g')
+//     .selectAll('text')
+//     .data(data)
+//     .enter()
+//     .append('text')
+//     .text(function(d) {
+//         return '[' + d.join(', ') + ']'
+//     })
+//     .attr('x', function(d) {
+//         return xScale(d[0]);
+//     })
+//     .attr('y', d => yScale(d[1]))
+// ;
+
+d3.select('button').on('click', function() {
+    // Create some random data
+    data = [];
+    let max = Math.random() * 1000;
+    for(let i = 0; i < 8; i++) {
+        let x = Math.floor((Math.random() * max));
+        let y = Math.floor((Math.random() * max));
+        data.push([x, y]);
+    }
+
+    // Update scales
+    xScale.domain([0, d3.max(data, function(d) {
+        return d[0];
+    })]);
+
+    yScale.domain([0, d3.max(data, function(d) {
+        return d[1];
+    })]);
+
+    svg.selectAll('circle')
+        .data(data)
+        .transition()
+        .duration(1000)
+        .attr('cx', function(d) {
+            return xScale(d[0]);
+        })
+        .attr('cy', function(d) {
+            return yScale(d[1]);
+        })
+    ;
+
+    // Update axis
+    svg.select('.x-axis')
+        .transition()
+        .duration(1000)
+        .call(xAxis);
+
+    svg.select('.y-axis')
+        .transition()
+        .duration(1000)
+        .call(yAxis);
+});
